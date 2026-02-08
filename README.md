@@ -2,6 +2,7 @@
 Repositorio para las prácticas y el proyecto de Compiladores, semestre 2026-1
 
 #Estrategia de ramas
+
 Haré una rama para cada practica y para el proyecto final con la versión final de la práctica/proyecto, cada rama de práctica/proyecto tendrá su subrama en caso de que servirá como código de prueba o bien en caso de querer probar algunas cosas o querer realizar cambios en el código que pudieran afectar en menor a mayor escala el resultado final
 
 # Compilers
