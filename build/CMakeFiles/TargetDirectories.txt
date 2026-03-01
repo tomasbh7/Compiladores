@@ -1,0 +1,3 @@
+/home/tomas/Documentos/Compiladores/Compiladores/build/CMakeFiles/regex_to_nfa.dir
+/home/tomas/Documentos/Compiladores/Compiladores/build/CMakeFiles/edit_cache.dir
+/home/tomas/Documentos/Compiladores/Compiladores/build/CMakeFiles/rebuild_cache.dir
