@@ -1,0 +1,22 @@
+====================================================================
+  Validador P3 - Scanner tipo C (Flex)
+====================================================================
+Paso 0: Compilación sin errores [EXITO]
+  scanner_cli generado: /flex_lab/build_validator/scanner_cli
+--------------------------------------------------------------------
+Paso 1: Verificacion de tokens tipo number [EXITO]
+  Caso 'Reconocimiento de numbers' correcto.
+--------------------------------------------------------------------
+Paso 2: Keywords, flujo e identificadores [EXITO]
+  Caso 'Keywords e identificadores' correcto.
+--------------------------------------------------------------------
+Paso 3: Operadores y delimitadores [EXITO]
+  Caso 'Operadores y delimitadores' correcto.
+--------------------------------------------------------------------
+Paso 4: Comentarios y literales [EXITO]
+  Caso 'Comentarios y literales' correcto.
+--------------------------------------------------------------------
+Paso 5: Manejo de token invalido [EXITO]
+  Caso 'Token inválido' correcto.
+--------------------------------------------------------------------
+Resumen: 6/6 pasos exitosos
