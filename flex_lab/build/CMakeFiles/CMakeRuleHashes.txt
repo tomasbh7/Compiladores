@@ -1,0 +1,3 @@
+# Hashes of file build rules.
+b289011dadd90a497652749c4e2d6d04 CMakeFiles/generate_scanner
+ca3797cbfa5dce39e6df1d3c67a723a9 scanner.c

@@ -1,0 +1,5 @@
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/flex_lab/build/CMakeFiles/scanner.dir
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/flex_lab/build/CMakeFiles/scanner_cli.dir
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/flex_lab/build/CMakeFiles/generate_scanner.dir
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/flex_lab/build/CMakeFiles/edit_cache.dir
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/flex_lab/build/CMakeFiles/rebuild_cache.dir

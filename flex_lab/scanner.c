@@ -21,6 +21,11 @@ int main(void)
 	- Lee tokens hasta EOF.
 	- Muestra cada token y su lexema en una línea.
 	*/
+	int token;
+    	while ((token = yylex()) != TOK_EOF) {
+        printf("[%s:%s]\n", scanner_token_name(token), yytext);
+    	}
+    	return 0;
 }
 
 const char *scanner_token_name(int token)
