@@ -166,6 +166,106 @@ static bool compute_follow_table(
 	int *out_follow_cols)
 {
 	// TODO: Allocate FOLLOW structures and propagate FOLLOW sets right-to-left until convergence.
+	if (!g || !first_table || !nullable || !out_follow || !out_follow_cols)
+		return false;
+
+	int N = g->num_non_terminals;
+	int T = g->num_terminals;
+
+	int cols = T + 1; 
+	*out_follow_cols = cols;
+
+	*out_follow = calloc(N * cols, sizeof(bool));
+	if (!*out_follow)
+		return false;
+
+	int dollar_col = T;
+
+	
+	(*out_follow)[0 * cols + dollar_col] = true;
+
+	bool changed = true;
+
+	while (changed)
+	{
+		changed = false;
+
+		for (int p = 0; p < g->num_productions; p++)
+		{
+			production prod = g->productions[p];
+			int A = prod.non_terminal_id;
+
+			for (int i = 0; i < prod.production_length; i++)
+			{
+				int sym_id = prod.production_symbol_ids[i];
+
+				
+				if (sym_id >= T)
+				{
+					int B = sym_id - T;
+					bool nullable_suffix = true;
+
+					
+					for (int j = i + 1; j < prod.production_length; j++)
+					{
+						int next_id = prod.production_symbol_ids[j];
+
+						if (next_id < T) 
+						{
+							if (next_id != epsilon_id)
+							{
+								if (!(*out_follow)[B * cols + next_id])
+								{
+									(*out_follow)[B * cols + next_id] = true;
+									changed = true;
+								}
+							}
+							nullable_suffix = false;
+							break;
+						}
+						else
+						{
+							int C = next_id - T;
+
+							for (int t = 0; t < T; t++)
+							{
+								if (t == epsilon_id)
+									continue;
+
+								if (first_table[C * T + t] &&
+									!(*out_follow)[B * cols + t])
+								{
+									(*out_follow)[B * cols + t] = true;
+									changed = true;
+								}
+							}
+
+							if (!nullable[C])
+							{
+								nullable_suffix = false;
+								break;
+							}
+						}
+					}
+
+					if (nullable_suffix)
+					{
+						for (int t = 0; t < cols; t++)
+						{
+							if ((*out_follow)[A * cols + t] &&
+								!(*out_follow)[B * cols + t])
+							{
+								(*out_follow)[B * cols + t] = true;
+								changed = true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return true;
 }
 
 /**
@@ -228,6 +328,27 @@ static int collect_follow_for_non_terminal(
 	symbol **out_follow)
 {
 	// TODO: Read one FOLLOW row, append terminal symbols, and include end marker '$' when present.
+	if (!g || !follow_table || !out_follow)
+		return 0;
+
+	int count = 0;
+	int T = g->num_terminals;
+
+	for (int t = 0; t < T; t++)
+	{
+		if (follow_table[non_terminal_id * follow_cols + t])
+		{
+			add_symbol_to_array(out_follow, &count,
+								g->terminals[t].symbol, true);
+		}
+	}
+
+	if (follow_table[non_terminal_id * follow_cols + T])
+	{
+		add_symbol_to_array(out_follow, &count, "$", true);
+	}
+
+	return count;
 }
 
 /**
@@ -274,6 +395,39 @@ int compute_first_for_non_terminal(const grammar *g, int non_terminal_id, symbol
 int compute_follow_for_non_terminal(const grammar *g, int non_terminal_id, symbol **out_follow)
 {
 	// TODO: Validate inputs, compute FIRST/nullable and FOLLOW tables, then collect FOLLOW for the target non-terminal.
+	if (!g || !out_follow)
+		return 0;
+
+	bool *first_table = NULL;
+	bool *nullable = NULL;
+	bool *follow_table = NULL;
+
+	int epsilon_id;
+	int follow_cols;
+
+	if (!compute_first_tables(g, &first_table, &nullable, &epsilon_id))
+		return 0;
+
+	if (!compute_follow_table(g, first_table, nullable, epsilon_id,
+							 &follow_table, &follow_cols))
+	{
+		free(first_table);
+		free(nullable);
+		return 0;
+	}
+
+	int result = collect_follow_for_non_terminal(
+		g,
+		non_terminal_id,
+		follow_table,
+		follow_cols,
+		out_follow);
+
+	free(first_table);
+	free(nullable);
+	free(follow_table);
+
+	return result;
 }
 
 /**
@@ -301,6 +455,10 @@ int compute_first_for_start_symbol(const grammar *g, symbol **out_first)
 int compute_follow_for_start_symbol(const grammar *g, symbol **out_follow)
 {
 	// TODO: Delegate FOLLOW computation to the generic non-terminal function using the start-symbol index.
+	if (!g)
+		return 0;
+
+	return compute_follow_for_non_terminal(g, 0, out_follow);
 }
 
 /**
@@ -312,4 +470,13 @@ int compute_follow_for_start_symbol(const grammar *g, symbol **out_follow)
 void free_symbol_array(symbol *symbols, int count)
 {
 	// TODO: Release each symbol string and then free the symbol array buffer.
+	if (!symbols)
+		return;
+
+	for (int i = 0; i < count; i++)
+	{
+		free(symbols[i].symbol);
+	}
+
+	free(symbols);
 }
