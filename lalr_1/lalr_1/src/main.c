@@ -332,6 +332,16 @@ static bool next_token(const grammar *g, token_stream *out_token)
     return terminal_id >= 0;
 }
 
+void print_stack(parser_stack *stack)
+{
+    printf("Stack: ");
+    for (int i = 0; i < stack->size; i++)
+    {
+        printf("%d ", stack->states[i]);
+    }
+    printf("\n");
+}
+
 /**
  * @brief Runs an LALR shift-reduce parse against yylex token stream.
  * @param g Parsed grammar.
@@ -363,11 +373,15 @@ static bool parse_token_stream(const grammar *g, const parser_table *table)
 
     while (true)
     {
+        printf("\n============================\n");
+        printf("Top state: %d\n", top_state(&stack));
+        printf("Lookahead: %s\n", lookahead.lexeme);
         int state_id = top_state(&stack);
         parser_action action = get_parser_action(table, state_id, lookahead.terminal_id);
 
         if (action.type == PARSER_ACTION_SHIFT)
         {
+            printf("Action: SHIFT to state %d\n", action.value);
             if (!push_state(&stack, action.value))
             {
                 fprintf(stderr, "Parser stack overflow while shifting.\n");
@@ -389,6 +403,27 @@ static bool parse_token_stream(const grammar *g, const parser_table *table)
 
         if (action.type == PARSER_ACTION_REDUCE)
         {
+            production p = g->productions[action.value];
+
+            printf("Action: REDUCE by p%d: %s -> ",
+                action.value,
+                g->non_terminals[p.non_terminal_id].symbol);
+
+            for (int i = 0; i < p.production_length; i++)
+            {
+                int sym_id = p.production_symbol_ids[i];
+
+                if (sym_id < g->num_terminals)
+                {
+                    printf("%s ", g->terminals[sym_id].symbol);
+                }
+                else
+                {
+                    int nt_index = sym_id - g->num_terminals;
+                    printf("%s ", g->non_terminals[nt_index].symbol);
+                }
+            }
+            printf("\n");
             if (action.value < 0 || action.value >= g->num_productions)
             {
                 fprintf(stderr, "Invalid reduction production index: %d\n", action.value);
@@ -396,7 +431,6 @@ static bool parse_token_stream(const grammar *g, const parser_table *table)
                 return false;
             }
 
-            production p = g->productions[action.value];
             int pop_count = reduction_pop_count(g, p);
             if (!pop_states(&stack, pop_count))
             {
@@ -430,10 +464,12 @@ static bool parse_token_stream(const grammar *g, const parser_table *table)
 
         if (action.type == PARSER_ACTION_ACCEPT)
         {
+             printf("Action: ACCEPT\n");
             free_parser_stack(&stack);
             return true;
         }
 
+        printf("Action: ERROR\n");
         fprintf(stderr,
                 "Syntax error at token '%s' (lexer=%d, terminal=%d) in state %d\n",
                 lookahead.lexeme,

@@ -1,0 +1,3 @@
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/CMakeFiles/first_and_follow.dir
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/CMakeFiles/edit_cache.dir
+/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/CMakeFiles/rebuild_cache.dir
