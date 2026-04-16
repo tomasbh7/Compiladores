@@ -375,7 +375,14 @@ static bool parse_token_stream(const grammar *g, const parser_table *table)
     {
         printf("\n============================\n");
         printf("Top state: %d\n", top_state(&stack));
-        printf("Lookahead: %s\n", lookahead.lexeme);
+        if (lookahead.lexeme == NULL || strlen(lookahead.lexeme) == 0)
+        {
+            printf("Lookahead: $\n");
+        }
+        else
+        {
+            printf("Lookahead: %s\n", lookahead.lexeme);
+        }
         int state_id = top_state(&stack);
         parser_action action = get_parser_action(table, state_id, lookahead.terminal_id);
 
