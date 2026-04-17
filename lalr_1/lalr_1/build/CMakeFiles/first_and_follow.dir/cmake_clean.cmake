@@ -1,5 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/first_and_follow.dir/link.d"
   "CMakeFiles/first_and_follow.dir/scanner.c.o"
   "CMakeFiles/first_and_follow.dir/scanner.c.o.d"
   "CMakeFiles/first_and_follow.dir/src/analyzer.c.o"

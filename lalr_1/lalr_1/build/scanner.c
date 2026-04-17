@@ -1,6 +1,6 @@
-#line 1 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/scanner.c"
+#line 2 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/build/scanner.c"
 
-#line 3 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/scanner.c"
+#line 4 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/build/scanner.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -553,12 +553,12 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
-#line 4 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 1 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 4 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 #include "scanner.h"
-#line 559 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/scanner.c"
+#line 560 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/build/scanner.c"
 
-#line 561 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/scanner.c"
+#line 562 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/build/scanner.c"
 
 #define INITIAL 0
 #define COMMENT 1
@@ -776,10 +776,10 @@ YY_DECL
 		}
 
 	{
-#line 14 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 14 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 
 
-#line 782 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/scanner.c"
+#line 783 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/build/scanner.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -848,290 +848,290 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 16 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 16 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { BEGIN(COMMENT); }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 17 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 17 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { BEGIN(INITIAL); }
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 18 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 18 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { /* yylineno se actualiza automáticamente */ }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 19 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 19 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { /* descartar contenido de comentario */ }
 	YY_BREAK
 case YY_STATE_EOF(COMMENT):
-#line 20 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 20 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_ERROR; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 22 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 22 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { /* comentario de línea */ }
 	YY_BREAK
 case 6:
 /* rule 6 can match eol */
 YY_RULE_SETUP
-#line 24 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 24 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { /* ignorar espacios */ }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 26 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 26 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_INT; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 27 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 27 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_FLOAT; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 28 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 28 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_DOUBLE; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 29 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 29 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_CHAR; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 30 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 30 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_VOID; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 31 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 31 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_IF; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 32 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 32 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_ELSE; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 33 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 33 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_WHILE; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 34 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 34 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_FOR; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 35 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 35 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_RETURN; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 36 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 36 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_BREAK; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 37 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 37 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_KW_CONTINUE; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 39 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 39 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_INC; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 40 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 40 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_DEC; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 41 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 41 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_PLUS_ASSIGN; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 42 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 42 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_MINUS_ASSIGN; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 43 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 43 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_MUL_ASSIGN; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 44 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 44 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_DIV_ASSIGN; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 45 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 45 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_MOD_ASSIGN; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 46 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 46 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_EQ; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 47 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 47 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_NEQ; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 48 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 48 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_LE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 49 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 49 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_GE; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 50 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 50 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_AND; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 51 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 51 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_OR; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 53 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 53 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_ASSIGN; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 54 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 54 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_LT; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 55 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 55 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_GT; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 56 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 56 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_NOT; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 57 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 57 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_PLUS; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 58 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 58 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_MINUS; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 59 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 59 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_MUL; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 60 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 60 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_DIV; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 61 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 61 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_MOD; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 63 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 63 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_LPAREN; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 64 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 64 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_RPAREN; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 65 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 65 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_LBRACE; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 66 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 66 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_RBRACE; }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 67 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 67 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_LBRACKET; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 68 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 68 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_RBRACKET; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 69 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 69 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_COMMA; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 70 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 70 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_SEMICOLON; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 72 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 72 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_FLOAT_LITERAL; }
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 73 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 73 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_INT_LITERAL; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 74 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 74 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_CHAR_LITERAL; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 75 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 75 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_STRING_LITERAL; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 76 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 76 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_IDENTIFIER; }
 	YY_BREAK
 case YY_STATE_EOF(INITIAL):
-#line 78 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 78 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_EOF; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 80 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 80 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 { return TOK_ERROR; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 82 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 82 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 ECHO;
 	YY_BREAK
-#line 1134 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/scanner.c"
+#line 1135 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/build/scanner.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -2146,6 +2146,6 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 82 "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/scanner.l"
+#line 82 "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/scanner.l"
 
 

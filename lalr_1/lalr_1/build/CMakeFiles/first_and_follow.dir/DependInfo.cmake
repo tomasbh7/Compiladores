@@ -8,13 +8,12 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/build/scanner.c" "CMakeFiles/first_and_follow.dir/scanner.c.o" "gcc" "CMakeFiles/first_and_follow.dir/scanner.c.o.d"
-  "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/analyzer.c" "CMakeFiles/first_and_follow.dir/src/analyzer.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/analyzer.c.o.d"
-  "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/automaton.c" "CMakeFiles/first_and_follow.dir/src/automaton.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/automaton.c.o.d"
-  "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/grammar.c" "CMakeFiles/first_and_follow.dir/src/grammar.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/grammar.c.o.d"
-  "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/main.c" "CMakeFiles/first_and_follow.dir/src/main.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/main.c.o.d"
-  "/home/tomas/Documentos/Compi/Compiladores/Compiladores/lalr_1/lalr_1/src/parser.c" "CMakeFiles/first_and_follow.dir/src/parser.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/parser.c.o.d"
-  "" "first_and_follow" "gcc" "CMakeFiles/first_and_follow.dir/link.d"
+  "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/build/scanner.c" "CMakeFiles/first_and_follow.dir/scanner.c.o" "gcc" "CMakeFiles/first_and_follow.dir/scanner.c.o.d"
+  "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/analyzer.c" "CMakeFiles/first_and_follow.dir/src/analyzer.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/analyzer.c.o.d"
+  "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/automaton.c" "CMakeFiles/first_and_follow.dir/src/automaton.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/automaton.c.o.d"
+  "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/grammar.c" "CMakeFiles/first_and_follow.dir/src/grammar.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/grammar.c.o.d"
+  "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/main.c" "CMakeFiles/first_and_follow.dir/src/main.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/main.c.o.d"
+  "/home/ayumu/Documents/semestre6/tomascomp/Compiladores/lalr_1/lalr_1/src/parser.c" "CMakeFiles/first_and_follow.dir/src/parser.c.o" "gcc" "CMakeFiles/first_and_follow.dir/src/parser.c.o.d"
   )
 
 # Targets to which this target links which contain Fortran sources.
