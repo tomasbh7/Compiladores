@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/tomas/Documentos/Compi/pdf lab/practica6",
-      "program": "/home/tomas/Documentos/Compi/pdf lab/practica6/build/Debug/outDebug",
+      "cwd": "/home/tomas/Documentos/Compi/Compiladores/Compiladores/practica6_prueba1",
+      "program": "/home/tomas/Documentos/Compi/Compiladores/Compiladores/practica6_prueba1/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

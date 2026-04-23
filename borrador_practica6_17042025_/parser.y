@@ -91,10 +91,10 @@ parameter:
     ;
 
 type:
-    QUACKINT { $$ = new Node("Type", "quackint"); }
-    | QUACKLE { $$ = new Node("Type", "quackle"); }
-    | QUACKS  { $$ = new Node("Type", "quacks"); }
-    | POND    { $$ = new Node("Type", "pond"); }
+    ELEMENTO_INT { $$ = new Node("Type", "geo"); }
+    | ELEMENTO_FLOAT { $$ = new Node("Type", "anemo"); }
+    | ELEMENTO_DOUBLE  { $$ = new Node("Type", "pyro"); }
+    | ELEMENTO_CHAR    { $$ = new Node("Type", "fisico"); }
     ;
 
 statement_list:
@@ -114,13 +114,13 @@ statement:
     | expression SEMI { $$ = $1; }
     | if_statement { $$ = $1; }
     | WHILE LPAREN expression RPAREN block {
-        $$ = new Node("Loop", "quack!");
+        $$ = new Node("Loop", "catalizador");
         $$->add_child($3);
         $$->add_child($5);
     }
     | for_loop { $$ = $1; }
     | QUACK_RETURN expression SEMI {
-        $$ = new Node("Return", "quack_return");
+        $$ = new Node("Return", "luz");
         $$->add_child($2);
     }
     ;
@@ -146,17 +146,17 @@ assignment:
 
 if_statement:
     IF LPAREN expression RPAREN block elsif_list {
-        $$ = new Node("Conditional", "quack?");
+        $$ = new Node("Conditional", "espada");
         $$->add_child($3);
         $$->add_child($5);
         if ($6) $$->add_child($6);
     }
     | IF LPAREN expression RPAREN block elsif_list ELSE block {
-        $$ = new Node("Conditional", "quack?");
+        $$ = new Node("Conditional", "espada");
         $$->add_child($3);
         $$->add_child($5);
         if ($6) $$->add_child($6);
-        Node* else_node = new Node("Else", "quack???");
+        Node* else_node = new Node("Else", "mandoble");
         else_node->add_child($8);
         $$->add_child(else_node);
     }
@@ -165,7 +165,7 @@ if_statement:
 elsif_list:
     /* empty */ { $$ = nullptr; }
     | elsif_list ELSIF LPAREN expression RPAREN block {
-        Node* elsif_node = new Node("Else-If", "quack??");
+        Node* elsif_node = new Node("Else-If", "lanza");
         elsif_node->add_child($4);
         elsif_node->add_child($6);
         if ($1) {
@@ -180,7 +180,7 @@ elsif_list:
 
 for_loop:
     FOR LPAREN assignment SEMI expression SEMI assignment RPAREN block {
-        $$ = new Node("Loop", "qu@ck");
+        $$ = new Node("Loop", "arco");
         Node* header = new Node("FOR Header");
         header->add_child($3);
         header->add_child($5);
@@ -205,17 +205,17 @@ expression:
         if ($3) $$->add_child($3);
     }
     | expression PLUS expression {
-        $$ = new Node("Operation", "(+)>");
+        $$ = new Node("Operation", "vaporizacion");
         $$->add_child($1);
         $$->add_child($3);
     }
     | expression MINUS expression {
-        $$ = new Node("Operation", "(-)>");
+        $$ = new Node("Operation", "derretido");
         $$->add_child($1);
         $$->add_child($3);
     }
     | expression MULT expression {
-        $$ = new Node("Operation", "(*)>");
+        $$ = new Node("Operation", "torbellino");
         $$->add_child($1);
         $$->add_child($3);
     }
@@ -225,22 +225,22 @@ expression:
         $$->add_child($3);
     }
     | expression MOD expression {
-        $$ = new Node("Operation", "(%)>");
+        $$ = new Node("Operation", "sobrecarga");
         $$->add_child($1);
         $$->add_child($3);
     }
-    | expression PATO_START expression {
-        $$ = new Node("Operation", "(^)>");
+    | expression aether_START expression {
+        $$ = new Node("Operation", "aether");
         $$->add_child($1);
         $$->add_child($3);
     }
     | expression EQ expression {
-        $$ = new Node("Comparison", "(==)>");
+        $$ = new Node("Comparison", "florecimiento");
         $$->add_child($1);
         $$->add_child($3);
     }
     | expression NEQ expression {
-        $$ = new Node("Comparison", "(!=)>");
+        $$ = new Node("Comparison", "aceleracion");
         $$->add_child($1);
         $$->add_child($3);
     }

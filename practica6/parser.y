@@ -2,288 +2,316 @@
 #include "ast.h"
 #include <iostream>
 #include <string>
+#include <map>
+#include <vector>
 
 extern int yylex();
 extern int yylineno;
+
 void yyerror(const char *s);
 
-Node* root; // Raíz del AST
+Node* root;
+
+std::vector<std::map<std::string, std::string>> scopes;
+std::string current_function_type = "";
+
+void push_scope() { scopes.push_back({}); }
+void pop_scope() { scopes.pop_back(); }
+
+void declare_var(const std::string& id, const std::string& type) {
+    scopes.back()[id] = type;
+}
+
+std::string lookup_var(const std::string& id) {
+    for (int i = scopes.size()-1; i >= 0; --i) {
+        if (scopes[i].count(id))
+            return scopes[i][id];
+    }
+    return "";
+}
+
+void error_semantico(std::string msg, int line) {
+    std::cerr << "semantic error: " << msg
+              << " at line " << line << std::endl;
+    exit(1);
+}
 %}
 
+%define parse.error detailed
+%locations
+
 %union {
-    int ival;
     char* sval;
-    class Node* nptr;
+    Node* nptr;
 }
 
 %token <sval> ID INT_LIT FLOAT_LIT STRING_LIT
-%token QUACKINT QUACKLE QUACKS POND QUACK_RETURN
+%token DO_INT RE_FLOAT MI_STRING FA_BOOLEAN RETURN
 %token IF ELSIF ELSE WHILE FOR
-%token PATO_START PATO_END
+%token BLOCK_START BLOCK_END
 %token PLUS MINUS MULT DIV MOD EQ NEQ GT LT
 %token ASSIGN SEMI COMMA LPAREN RPAREN
+%token PRINT READ
+%token TRUE FALSE
+%token AND OR NOT
 
-/* Tipos de nodos */
-%type <nptr> program mixed_list mixed_item function_definition 
-%type <nptr> parameter_list parameter type declaration statement_list 
-%type <nptr> statement expression if_statement block 
-%type <nptr> elsif_list argument_list for_loop assignment
+%type <nptr> program mixed_list mixed_item function_definition
+%type <nptr> parameter_list parameter type declaration statement_list
+%type <nptr> statement expression if_statement block
+%type <nptr> elsif_list for_loop assignment
 
-/* Precedencia */
-%left PATO_START
+%left OR
+%left AND
+%precedence NOT
 %left EQ NEQ GT LT
 %left PLUS MINUS
 %left MULT DIV MOD
-%right ASSIGN
 
 %%
 
 program:
-    mixed_list { root = $1; }
-    ;
+    { push_scope(); }
+    mixed_list { root = $2; pop_scope(); }
+;
 
 mixed_list:
-    mixed_item { 
-        $$ = new Node("Program"); 
-        $$->add_child($1); 
-    }
-    | mixed_list mixed_item { 
-        $1->add_child($2); 
-        $$ = $1; 
-    }
-    ;
+    mixed_item { $$ = new Node("Program"); $$->add_child($1); }
+    | mixed_list mixed_item { $1->add_child($2); $$ = $1; }
+;
 
 mixed_item:
     function_definition { $$ = $1; }
     | statement { $$ = $1; }
-    ;
+;
 
 function_definition:
-    POND ID LPAREN parameter_list RPAREN block {
-        $$ = new Node("Function", "pond " + std::string($2));
+    type ID LPAREN parameter_list RPAREN block {
+        $$ = new Node("Function", $2);
+        $$->value = $1->value;
+        current_function_type = $1->value;
+
         if ($4) $$->add_child($4);
         $$->add_child($6);
+
+        current_function_type = "";
     }
-    ;
+;
 
 parameter_list:
-    /* empty */ { $$ = nullptr; }
-    | parameter { 
+    %empty { $$ = nullptr; }
+    | parameter {
         $$ = new Node("Parameters");
-        $$->add_child($1); 
+        $$->add_child($1);
     }
     | parameter_list COMMA parameter {
-        if ($1) {
-            $1->add_child($3);
-            $$ = $1;
-        } else {
-            $$ = new Node("Parameters");
-            $$->add_child($3);
-        }
+        $1->add_child($3);
+        $$ = $1;
     }
-    ;
+;
 
 parameter:
     type ID {
-        $$ = new Node("Parameter", std::string($2));
+        declare_var($2, $1->value);
+        $$ = new Node("Parameter", $2);
         $$->add_child($1);
     }
-    ;
+;
 
 type:
-    ELEMENTO_INT { $$ = new Node("Type", "geo"); }
-    | ELEMENTO_FLOAT { $$ = new Node("Type", "anemo"); }
-    | ELEMENTO_DOUBLE  { $$ = new Node("Type", "pyro"); }
-    | ELEMENTO_CHAR    { $$ = new Node("Type", "fisico"); }
-    ;
+    DO_INT      { $$ = new Node("Type","int"); $$->value="int"; }
+  | RE_FLOAT    { $$ = new Node("Type","float"); $$->value="float"; }
+  | MI_STRING   { $$ = new Node("Type","string"); $$->value="string"; }
+  | FA_BOOLEAN  { $$ = new Node("Type","bool"); $$->value="bool"; }
+;
 
 statement_list:
-    statement { 
-        $$ = new Node("Statement List"); 
-        $$->add_child($1); 
-    }
-    | statement_list statement { 
-        $1->add_child($2); 
-        $$ = $1; 
-    }
-    ;
+    statement { $$ = new Node("Statements"); $$->add_child($1); }
+    | statement_list statement { $1->add_child($2); $$ = $1; }
+;
 
 statement:
     declaration SEMI { $$ = $1; }
     | assignment SEMI { $$ = $1; }
     | expression SEMI { $$ = $1; }
-    | if_statement { $$ = $1; }
+
+    | PRINT LPAREN expression RPAREN SEMI {
+        $$ = new Node("Print");
+        $$->add_child($3);
+    }
+
+    | READ LPAREN ID RPAREN SEMI {
+        if (lookup_var($3) == "")
+            error_semantico("variable no declarada: " + std::string($3), @3.first_line);
+        $$ = new Node("Read", $3);
+    }
+
+    | if_statement
+
     | WHILE LPAREN expression RPAREN block {
-        $$ = new Node("Loop", "catalizador");
+        if ($3->value != "bool")
+            error_semantico("WHILE requiere condición booleana", @3.first_line);
+
+        $$ = new Node("While");
         $$->add_child($3);
         $$->add_child($5);
     }
-    | for_loop { $$ = $1; }
-    | QUACK_RETURN expression SEMI {
-        $$ = new Node("Return", "luz");
+
+    | for_loop
+
+    | RETURN expression SEMI {
+        if (current_function_type != "" && current_function_type != $2->value)
+            error_semantico("tipo de retorno incorrecto", @2.first_line);
+
+        $$ = new Node("Return");
         $$->add_child($2);
     }
-    ;
+;
 
 declaration:
     type ID ASSIGN expression {
-        $$ = new Node("Declaration", std::string($2));
-        $$->add_child($1);
+        if ($1->value != $4->value)
+            error_semantico("asignación incompatible", @2.first_line);
+
+        declare_var($2, $1->value);
+
+        $$ = new Node("Declaration", $2);
+        $$->value = $1->value;
         $$->add_child($4);
     }
     | type ID {
-        $$ = new Node("Declaration", std::string($2));
-        $$->add_child($1);
+        declare_var($2, $1->value);
+        $$ = new Node("Declaration", $2);
+        $$->value = $1->value;
     }
-    ;
+;
 
 assignment:
     ID ASSIGN expression {
-        $$ = new Node("Assignment", std::string($1));
+        std::string t = lookup_var($1);
+        if (t == "")
+            error_semantico("variable no declarada", @1.first_line);
+
+        if (t != $3->value)
+            error_semantico("tipos incompatibles", @3.first_line);
+
+        $$ = new Node("Assignment", $1);
         $$->add_child($3);
     }
-    ;
+;
 
 if_statement:
     IF LPAREN expression RPAREN block elsif_list {
-        $$ = new Node("Conditional", "espada");
+        if ($3->value != "bool")
+            error_semantico("IF requiere condición booleana", @3.first_line);
+
+        $$ = new Node("If");
         $$->add_child($3);
         $$->add_child($5);
         if ($6) $$->add_child($6);
     }
     | IF LPAREN expression RPAREN block elsif_list ELSE block {
-        $$ = new Node("Conditional", "espada");
+        if ($3->value != "bool")
+            error_semantico("IF requiere condición booleana", @3.first_line);
+
+        $$ = new Node("If");
         $$->add_child($3);
         $$->add_child($5);
-        if ($6) $$->add_child($6);
-        Node* else_node = new Node("Else", "mandoble");
-        else_node->add_child($8);
-        $$->add_child(else_node);
+
+        Node* e = new Node("Else");
+        e->add_child($8);
+        $$->add_child(e);
     }
-    ;
+;
 
 elsif_list:
-    /* empty */ { $$ = nullptr; }
+    %empty { $$ = nullptr; }
     | elsif_list ELSIF LPAREN expression RPAREN block {
-        Node* elsif_node = new Node("Else-If", "lanza");
-        elsif_node->add_child($4);
-        elsif_node->add_child($6);
-        if ($1) {
-            $1->add_child(elsif_node);
-            $$ = $1;
-        } else {
-            $$ = new Node("Else-If Branches");
-            $$->add_child(elsif_node);
+        if ($4->value != "bool")
+            error_semantico("ELSIF requiere condición booleana", @4.first_line);
+
+        Node* n = new Node("ElseIf");
+        n->add_child($4);
+        n->add_child($6);
+
+        if ($1) { $1->add_child(n); $$ = $1; }
+        else {
+            $$ = new Node("ElseIfList");
+            $$->add_child(n);
         }
     }
-    ;
+;
 
 for_loop:
     FOR LPAREN assignment SEMI expression SEMI assignment RPAREN block {
-        $$ = new Node("Loop", "arco");
-        Node* header = new Node("FOR Header");
-        header->add_child($3);
-        header->add_child($5);
-        header->add_child($7);
-        $$->add_child(header);
+        if ($5->value != "bool")
+            error_semantico("FOR requiere condición booleana", @5.first_line);
+
+        $$ = new Node("For");
+
+        Node* h = new Node("Header");
+        h->add_child($3);
+        h->add_child($5);
+        h->add_child($7);
+
+        $$->add_child(h);
         $$->add_child($9);
     }
-    ;
+;
 
 block:
-    PATO_START statement_list PATO_END { $$ = $2; }
-    | PATO_START PATO_END { $$ = new Node("Empty Block"); }
-    ;
+    BLOCK_START { push_scope(); }
+    statement_list BLOCK_END {
+        $$ = $3;
+        pop_scope();
+    }
+    | BLOCK_START BLOCK_END {
+        $$ = new Node("EmptyBlock");
+    }
+;
 
 expression:
-    INT_LIT { $$ = new Node("Integer", $1); }
-    | FLOAT_LIT { $$ = new Node("Float", $1); }
-    | STRING_LIT { $$ = new Node("String", $1); }
-    | ID { $$ = new Node("Identifier", $1); }
-    | ID LPAREN argument_list RPAREN {
-        $$ = new Node("Call", std::string($1));
-        if ($3) $$->add_child($3);
-    }
-    | expression PLUS expression {
-        $$ = new Node("Operation", "vaporizacion");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression MINUS expression {
-        $$ = new Node("Operation", "derretido");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression MULT expression {
-        $$ = new Node("Operation", "torbellino");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression DIV expression {
-        $$ = new Node("Operation", "(/)>");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression MOD expression {
-        $$ = new Node("Operation", "sobrecarga");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression aether_START expression {
-        $$ = new Node("Operation", "aether");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression EQ expression {
-        $$ = new Node("Comparison", "florecimiento");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression NEQ expression {
-        $$ = new Node("Comparison", "aceleracion");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression GT expression {
-        $$ = new Node("Comparison", "(>)>");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | expression LT expression {
-        $$ = new Node("Comparison", "(<)>");
-        $$->add_child($1);
-        $$->add_child($3);
-    }
-    | LPAREN expression RPAREN { $$ = $2; }
-    ;
+    INT_LIT { $$ = new Node("Int",$1); $$->value="int"; }
+  | FLOAT_LIT { $$ = new Node("Float",$1); $$->value="float"; }
+  | STRING_LIT { $$ = new Node("String",$1); $$->value="string"; }
+  | TRUE { $$ = new Node("Bool","true"); $$->value="bool"; }
+  | FALSE { $$ = new Node("Bool","false"); $$->value="bool"; }
 
-argument_list:
-    /* empty */ { $$ = nullptr; }
-    | expression { 
-        $$ = new Node("Arguments");
-        $$->add_child($1); 
+  | ID {
+        std::string t = lookup_var($1);
+        if (t == "")
+            error_semantico("variable no declarada", @1.first_line);
+        $$ = new Node("Id",$1);
+        $$->value = t;
     }
-    | argument_list COMMA expression {
-        if ($1) {
-            $1->add_child($3);
-            $$ = $1;
-        } else {
-            $$ = new Node("Arguments");
-            $$->add_child($3);
-        }
-    }
-    ;
+
+  | expression PLUS expression { $$ = new Node("Add"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
+  | expression MINUS expression { $$ = new Node("Sub"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
+  | expression MULT expression { $$ = new Node("Mul"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
+  | expression DIV expression { $$ = new Node("Div"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
+  | expression MOD expression { $$ = new Node("Mod"); $$->add_child($1); $$->add_child($3); $$->value="int"; }
+
+  | expression EQ expression { $$ = new Node("Eq"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
+  | expression NEQ expression { $$ = new Node("Neq"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
+  | expression GT expression { $$ = new Node("Gt"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
+  | expression LT expression { $$ = new Node("Lt"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
+
+  | expression AND expression { $$ = new Node("And"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
+  | expression OR expression { $$ = new Node("Or"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
+  | NOT expression { $$ = new Node("Not"); $$->add_child($2); $$->value="bool"; }
+
+  | LPAREN expression RPAREN { $$ = $2; }
+;
 
 %%
 
 void yyerror(const char *s) {
-    std::cerr << "Quack-astrophic Error: " << s << " at line " << yylineno << std::endl;
+    std::cerr << "syntax error: " << s << std::endl;
 }
 
 int main() {
-    std::cout << "--- Starting Quackier++ Parser ---" << std::endl;
+    std::cout << "--- Parser Musical ---" << std::endl;
     if (yyparse() == 0) {
-        std::cout << "\n--- Analysis Success. Pond Structure (AST): ---" << std::endl;
+        std::cout << "\n--- AST generado ---" << std::endl;
         if (root) {
             root->print();
             root->gen_dot("ast.dot");
