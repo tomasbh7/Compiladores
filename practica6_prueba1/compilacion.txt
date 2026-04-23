@@ -1,0 +1,15 @@
+bison -d parser.y
+flex lexer.l
+g++ parser.tab.c lex.yy.c ast.cpp -o compilador
+./compilador < prueba.txt
+./compilador < prueba2.txt
+./compilador < prueba3.txt
+./compilador < prueba4.txt
+./compilador < prueba5.txt
+./compilador < prueba6.txt
+./compilador < prueba7.txt
+
+Instalación para la visualización del AST (FEDORA):
+sudo dnf install graphviz
+dot -Tpng ast.dot -o ast.png
+xdg-open ast.png
