@@ -70,6 +70,7 @@
 #line 1 "parser.y"
 
 #include "ast.h"
+#include "parser.tab.h"
 #include <iostream>
 #include <string>
 #include <map>
@@ -77,6 +78,7 @@
 
 extern int yylex();
 extern int yylineno;
+extern YYLTYPE yylloc;
 
 void yyerror(const char *s);
 
@@ -89,6 +91,9 @@ void push_scope() { scopes.push_back({}); }
 void pop_scope() { scopes.pop_back(); }
 
 void declare_var(const std::string& id, const std::string& type) {
+    if (scopes.back().count(id))
+        std::cerr << "warning: variable redeclarada: " << id << std::endl;
+
     scopes.back()[id] = type;
 }
 
@@ -106,7 +111,7 @@ void error_semantico(std::string msg, int line) {
     exit(1);
 }
 
-#line 110 "parser.tab.c"
+#line 115 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -585,12 +590,12 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    73,    73,    73,    78,    79,    83,    84,    88,   101,
-     102,   106,   113,   121,   122,   123,   124,   128,   129,   133,
-     134,   135,   137,   142,   148,   150,   159,   161,   171,   181,
-     189,   203,   212,   227,   228,   245,   262,   262,   267,   273,
-     274,   275,   276,   277,   279,   287,   288,   289,   290,   291,
-     293,   294,   295,   296,   298,   299,   300,   302
+       0,    78,    78,    78,    83,    84,    88,    89,    93,   106,
+     107,   111,   118,   126,   127,   128,   129,   133,   134,   138,
+     139,   140,   142,   147,   153,   155,   164,   166,   176,   186,
+     194,   208,   217,   232,   233,   250,   267,   267,   272,   280,
+     281,   282,   283,   284,   286,   295,   302,   309,   316,   323,
+     331,   338,   345,   352,   360,   367,   374,   381
 };
 #endif
 
@@ -1595,43 +1600,31 @@ yyreduce:
   switch (yyn)
     {
   case 2: /* $@1: %empty  */
-#line 73 "parser.y"
+#line 78 "parser.y"
     { push_scope(); }
-#line 1601 "parser.tab.c"
+#line 1606 "parser.tab.c"
     break;
 
   case 3: /* program: $@1 mixed_list  */
-#line 74 "parser.y"
+#line 79 "parser.y"
                { root = (yyvsp[0].nptr); pop_scope(); }
-#line 1607 "parser.tab.c"
+#line 1612 "parser.tab.c"
     break;
 
   case 4: /* mixed_list: mixed_item  */
-#line 78 "parser.y"
+#line 83 "parser.y"
                { (yyval.nptr) = new Node("Program"); (yyval.nptr)->add_child((yyvsp[0].nptr)); }
-#line 1613 "parser.tab.c"
+#line 1618 "parser.tab.c"
     break;
 
   case 5: /* mixed_list: mixed_list mixed_item  */
-#line 79 "parser.y"
-                            { (yyvsp[-1].nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr) = (yyvsp[-1].nptr); }
-#line 1619 "parser.tab.c"
-    break;
-
-  case 6: /* mixed_item: function_definition  */
-#line 83 "parser.y"
-                        { (yyval.nptr) = (yyvsp[0].nptr); }
-#line 1625 "parser.tab.c"
-    break;
-
-  case 7: /* mixed_item: statement  */
 #line 84 "parser.y"
-                { (yyval.nptr) = (yyvsp[0].nptr); }
-#line 1631 "parser.tab.c"
+                            { (yyvsp[-1].nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr) = (yyvsp[-1].nptr); }
+#line 1624 "parser.tab.c"
     break;
 
   case 8: /* function_definition: type ID LPAREN parameter_list RPAREN block  */
-#line 88 "parser.y"
+#line 93 "parser.y"
                                                {
         (yyval.nptr) = new Node("Function", (yyvsp[-4].sval));
         (yyval.nptr)->value = (yyvsp[-5].nptr)->value;
@@ -1642,118 +1635,100 @@ yyreduce:
 
         current_function_type = "";
     }
-#line 1646 "parser.tab.c"
+#line 1639 "parser.tab.c"
     break;
 
   case 9: /* parameter_list: %empty  */
-#line 101 "parser.y"
+#line 106 "parser.y"
            { (yyval.nptr) = nullptr; }
-#line 1652 "parser.tab.c"
+#line 1645 "parser.tab.c"
     break;
 
   case 10: /* parameter_list: parameter  */
-#line 102 "parser.y"
+#line 107 "parser.y"
                 {
         (yyval.nptr) = new Node("Parameters");
         (yyval.nptr)->add_child((yyvsp[0].nptr));
     }
-#line 1661 "parser.tab.c"
+#line 1654 "parser.tab.c"
     break;
 
   case 11: /* parameter_list: parameter_list COMMA parameter  */
-#line 106 "parser.y"
+#line 111 "parser.y"
                                      {
         (yyvsp[-2].nptr)->add_child((yyvsp[0].nptr));
         (yyval.nptr) = (yyvsp[-2].nptr);
     }
-#line 1670 "parser.tab.c"
+#line 1663 "parser.tab.c"
     break;
 
   case 12: /* parameter: type ID  */
-#line 113 "parser.y"
+#line 118 "parser.y"
             {
         declare_var((yyvsp[0].sval), (yyvsp[-1].nptr)->value);
         (yyval.nptr) = new Node("Parameter", (yyvsp[0].sval));
         (yyval.nptr)->add_child((yyvsp[-1].nptr));
     }
-#line 1680 "parser.tab.c"
+#line 1673 "parser.tab.c"
     break;
 
   case 13: /* type: DO_INT  */
-#line 121 "parser.y"
+#line 126 "parser.y"
                 { (yyval.nptr) = new Node("Type","int"); (yyval.nptr)->value="int"; }
-#line 1686 "parser.tab.c"
+#line 1679 "parser.tab.c"
     break;
 
   case 14: /* type: RE_FLOAT  */
-#line 122 "parser.y"
+#line 127 "parser.y"
                 { (yyval.nptr) = new Node("Type","float"); (yyval.nptr)->value="float"; }
-#line 1692 "parser.tab.c"
+#line 1685 "parser.tab.c"
     break;
 
   case 15: /* type: MI_STRING  */
-#line 123 "parser.y"
+#line 128 "parser.y"
                 { (yyval.nptr) = new Node("Type","string"); (yyval.nptr)->value="string"; }
-#line 1698 "parser.tab.c"
+#line 1691 "parser.tab.c"
     break;
 
   case 16: /* type: FA_BOOLEAN  */
-#line 124 "parser.y"
+#line 129 "parser.y"
                 { (yyval.nptr) = new Node("Type","bool"); (yyval.nptr)->value="bool"; }
-#line 1704 "parser.tab.c"
+#line 1697 "parser.tab.c"
     break;
 
   case 17: /* statement_list: statement  */
-#line 128 "parser.y"
+#line 133 "parser.y"
               { (yyval.nptr) = new Node("Statements"); (yyval.nptr)->add_child((yyvsp[0].nptr)); }
-#line 1710 "parser.tab.c"
+#line 1703 "parser.tab.c"
     break;
 
   case 18: /* statement_list: statement_list statement  */
-#line 129 "parser.y"
-                               { (yyvsp[-1].nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr) = (yyvsp[-1].nptr); }
-#line 1716 "parser.tab.c"
-    break;
-
-  case 19: /* statement: declaration SEMI  */
-#line 133 "parser.y"
-                     { (yyval.nptr) = (yyvsp[-1].nptr); }
-#line 1722 "parser.tab.c"
-    break;
-
-  case 20: /* statement: assignment SEMI  */
 #line 134 "parser.y"
-                      { (yyval.nptr) = (yyvsp[-1].nptr); }
-#line 1728 "parser.tab.c"
-    break;
-
-  case 21: /* statement: expression SEMI  */
-#line 135 "parser.y"
-                      { (yyval.nptr) = (yyvsp[-1].nptr); }
-#line 1734 "parser.tab.c"
+                               { (yyvsp[-1].nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr) = (yyvsp[-1].nptr); }
+#line 1709 "parser.tab.c"
     break;
 
   case 22: /* statement: PRINT LPAREN expression RPAREN SEMI  */
-#line 137 "parser.y"
+#line 142 "parser.y"
                                           {
         (yyval.nptr) = new Node("Print");
         (yyval.nptr)->add_child((yyvsp[-2].nptr));
     }
-#line 1743 "parser.tab.c"
+#line 1718 "parser.tab.c"
     break;
 
   case 23: /* statement: READ LPAREN ID RPAREN SEMI  */
-#line 142 "parser.y"
+#line 147 "parser.y"
                                  {
         if (lookup_var((yyvsp[-2].sval)) == "")
-            error_semantico("variable no declarada: " + std::string((yyvsp[-2].sval)), (yylsp[-2]).first_line);
+            error_semantico("variable no declarada", (yylsp[-2]).first_line);
         (yyval.nptr) = new Node("Read", (yyvsp[-2].sval));
     }
-#line 1753 "parser.tab.c"
+#line 1728 "parser.tab.c"
     break;
 
   case 25: /* statement: WHILE LPAREN expression RPAREN block  */
-#line 150 "parser.y"
+#line 155 "parser.y"
                                            {
         if ((yyvsp[-2].nptr)->value != "bool")
             error_semantico("WHILE requiere condición booleana", (yylsp[-2]).first_line);
@@ -1762,11 +1737,11 @@ yyreduce:
         (yyval.nptr)->add_child((yyvsp[-2].nptr));
         (yyval.nptr)->add_child((yyvsp[0].nptr));
     }
-#line 1766 "parser.tab.c"
+#line 1741 "parser.tab.c"
     break;
 
   case 27: /* statement: RETURN expression SEMI  */
-#line 161 "parser.y"
+#line 166 "parser.y"
                              {
         if (current_function_type != "" && current_function_type != (yyvsp[-1].nptr)->value)
             error_semantico("tipo de retorno incorrecto", (yylsp[-1]).first_line);
@@ -1774,11 +1749,11 @@ yyreduce:
         (yyval.nptr) = new Node("Return");
         (yyval.nptr)->add_child((yyvsp[-1].nptr));
     }
-#line 1778 "parser.tab.c"
+#line 1753 "parser.tab.c"
     break;
 
   case 28: /* declaration: type ID ASSIGN expression  */
-#line 171 "parser.y"
+#line 176 "parser.y"
                               {
         if ((yyvsp[-3].nptr)->value != (yyvsp[0].nptr)->value)
             error_semantico("asignación incompatible", (yylsp[-2]).first_line);
@@ -1789,21 +1764,21 @@ yyreduce:
         (yyval.nptr)->value = (yyvsp[-3].nptr)->value;
         (yyval.nptr)->add_child((yyvsp[0].nptr));
     }
-#line 1793 "parser.tab.c"
+#line 1768 "parser.tab.c"
     break;
 
   case 29: /* declaration: type ID  */
-#line 181 "parser.y"
+#line 186 "parser.y"
               {
         declare_var((yyvsp[0].sval), (yyvsp[-1].nptr)->value);
         (yyval.nptr) = new Node("Declaration", (yyvsp[0].sval));
         (yyval.nptr)->value = (yyvsp[-1].nptr)->value;
     }
-#line 1803 "parser.tab.c"
+#line 1778 "parser.tab.c"
     break;
 
   case 30: /* assignment: ID ASSIGN expression  */
-#line 189 "parser.y"
+#line 194 "parser.y"
                          {
         std::string t = lookup_var((yyvsp[-2].sval));
         if (t == "")
@@ -1815,11 +1790,11 @@ yyreduce:
         (yyval.nptr) = new Node("Assignment", (yyvsp[-2].sval));
         (yyval.nptr)->add_child((yyvsp[0].nptr));
     }
-#line 1819 "parser.tab.c"
+#line 1794 "parser.tab.c"
     break;
 
   case 31: /* if_statement: IF LPAREN expression RPAREN block elsif_list  */
-#line 203 "parser.y"
+#line 208 "parser.y"
                                                  {
         if ((yyvsp[-3].nptr)->value != "bool")
             error_semantico("IF requiere condición booleana", (yylsp[-3]).first_line);
@@ -1829,11 +1804,11 @@ yyreduce:
         (yyval.nptr)->add_child((yyvsp[-1].nptr));
         if ((yyvsp[0].nptr)) (yyval.nptr)->add_child((yyvsp[0].nptr));
     }
-#line 1833 "parser.tab.c"
+#line 1808 "parser.tab.c"
     break;
 
   case 32: /* if_statement: IF LPAREN expression RPAREN block elsif_list ELSE block  */
-#line 212 "parser.y"
+#line 217 "parser.y"
                                                               {
         if ((yyvsp[-5].nptr)->value != "bool")
             error_semantico("IF requiere condición booleana", (yylsp[-5]).first_line);
@@ -1846,17 +1821,17 @@ yyreduce:
         e->add_child((yyvsp[0].nptr));
         (yyval.nptr)->add_child(e);
     }
-#line 1850 "parser.tab.c"
+#line 1825 "parser.tab.c"
     break;
 
   case 33: /* elsif_list: %empty  */
-#line 227 "parser.y"
+#line 232 "parser.y"
            { (yyval.nptr) = nullptr; }
-#line 1856 "parser.tab.c"
+#line 1831 "parser.tab.c"
     break;
 
   case 34: /* elsif_list: elsif_list ELSIF LPAREN expression RPAREN block  */
-#line 228 "parser.y"
+#line 233 "parser.y"
                                                       {
         if ((yyvsp[-2].nptr)->value != "bool")
             error_semantico("ELSIF requiere condición booleana", (yylsp[-2]).first_line);
@@ -1871,11 +1846,11 @@ yyreduce:
             (yyval.nptr)->add_child(n);
         }
     }
-#line 1875 "parser.tab.c"
+#line 1850 "parser.tab.c"
     break;
 
   case 35: /* for_loop: FOR LPAREN assignment SEMI expression SEMI assignment RPAREN block  */
-#line 245 "parser.y"
+#line 250 "parser.y"
                                                                        {
         if ((yyvsp[-4].nptr)->value != "bool")
             error_semantico("FOR requiere condición booleana", (yylsp[-4]).first_line);
@@ -1890,64 +1865,64 @@ yyreduce:
         (yyval.nptr)->add_child(h);
         (yyval.nptr)->add_child((yyvsp[0].nptr));
     }
-#line 1894 "parser.tab.c"
+#line 1869 "parser.tab.c"
     break;
 
   case 36: /* $@2: %empty  */
-#line 262 "parser.y"
+#line 267 "parser.y"
                 { push_scope(); }
-#line 1900 "parser.tab.c"
+#line 1875 "parser.tab.c"
     break;
 
   case 37: /* block: BLOCK_START $@2 statement_list BLOCK_END  */
-#line 263 "parser.y"
+#line 268 "parser.y"
                              {
         (yyval.nptr) = (yyvsp[-1].nptr);
         pop_scope();
     }
-#line 1909 "parser.tab.c"
+#line 1884 "parser.tab.c"
     break;
 
   case 38: /* block: BLOCK_START BLOCK_END  */
-#line 267 "parser.y"
+#line 272 "parser.y"
                             {
         (yyval.nptr) = new Node("EmptyBlock");
     }
-#line 1917 "parser.tab.c"
+#line 1892 "parser.tab.c"
     break;
 
   case 39: /* expression: INT_LIT  */
-#line 273 "parser.y"
+#line 280 "parser.y"
             { (yyval.nptr) = new Node("Int",(yyvsp[0].sval)); (yyval.nptr)->value="int"; }
-#line 1923 "parser.tab.c"
+#line 1898 "parser.tab.c"
     break;
 
   case 40: /* expression: FLOAT_LIT  */
-#line 274 "parser.y"
+#line 281 "parser.y"
               { (yyval.nptr) = new Node("Float",(yyvsp[0].sval)); (yyval.nptr)->value="float"; }
-#line 1929 "parser.tab.c"
+#line 1904 "parser.tab.c"
     break;
 
   case 41: /* expression: STRING_LIT  */
-#line 275 "parser.y"
+#line 282 "parser.y"
                { (yyval.nptr) = new Node("String",(yyvsp[0].sval)); (yyval.nptr)->value="string"; }
-#line 1935 "parser.tab.c"
+#line 1910 "parser.tab.c"
     break;
 
   case 42: /* expression: TRUE  */
-#line 276 "parser.y"
+#line 283 "parser.y"
          { (yyval.nptr) = new Node("Bool","true"); (yyval.nptr)->value="bool"; }
-#line 1941 "parser.tab.c"
+#line 1916 "parser.tab.c"
     break;
 
   case 43: /* expression: FALSE  */
-#line 277 "parser.y"
+#line 284 "parser.y"
           { (yyval.nptr) = new Node("Bool","false"); (yyval.nptr)->value="bool"; }
-#line 1947 "parser.tab.c"
+#line 1922 "parser.tab.c"
     break;
 
   case 44: /* expression: ID  */
-#line 279 "parser.y"
+#line 286 "parser.y"
        {
         std::string t = lookup_var((yyvsp[0].sval));
         if (t == "")
@@ -1955,89 +1930,149 @@ yyreduce:
         (yyval.nptr) = new Node("Id",(yyvsp[0].sval));
         (yyval.nptr)->value = t;
     }
-#line 1959 "parser.tab.c"
+#line 1934 "parser.tab.c"
     break;
 
   case 45: /* expression: expression PLUS expression  */
-#line 287 "parser.y"
-                               { (yyval.nptr) = new Node("Add"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value=(yyvsp[-2].nptr)->value; }
-#line 1965 "parser.tab.c"
+#line 295 "parser.y"
+                               {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("tipos incompatibles en suma", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Add"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value=(yyvsp[-2].nptr)->value;
+    }
+#line 1945 "parser.tab.c"
     break;
 
   case 46: /* expression: expression MINUS expression  */
-#line 288 "parser.y"
-                                { (yyval.nptr) = new Node("Sub"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value=(yyvsp[-2].nptr)->value; }
-#line 1971 "parser.tab.c"
+#line 302 "parser.y"
+                                {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("tipos incompatibles en resta", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Sub"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value=(yyvsp[-2].nptr)->value;
+    }
+#line 1956 "parser.tab.c"
     break;
 
   case 47: /* expression: expression MULT expression  */
-#line 289 "parser.y"
-                               { (yyval.nptr) = new Node("Mul"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value=(yyvsp[-2].nptr)->value; }
-#line 1977 "parser.tab.c"
+#line 309 "parser.y"
+                               {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("tipos incompatibles en multiplicación", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Mul"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value=(yyvsp[-2].nptr)->value;
+    }
+#line 1967 "parser.tab.c"
     break;
 
   case 48: /* expression: expression DIV expression  */
-#line 290 "parser.y"
-                              { (yyval.nptr) = new Node("Div"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value=(yyvsp[-2].nptr)->value; }
-#line 1983 "parser.tab.c"
+#line 316 "parser.y"
+                              {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("tipos incompatibles en división", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Div"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value=(yyvsp[-2].nptr)->value;
+    }
+#line 1978 "parser.tab.c"
     break;
 
   case 49: /* expression: expression MOD expression  */
-#line 291 "parser.y"
-                              { (yyval.nptr) = new Node("Mod"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="int"; }
+#line 323 "parser.y"
+                              {
+        if ((yyvsp[-2].nptr)->value != "int" || (yyvsp[0].nptr)->value != "int")
+            error_semantico("MOD solo acepta enteros", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Mod"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="int";
+    }
 #line 1989 "parser.tab.c"
     break;
 
   case 50: /* expression: expression EQ expression  */
-#line 293 "parser.y"
-                             { (yyval.nptr) = new Node("Eq"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="bool"; }
-#line 1995 "parser.tab.c"
+#line 331 "parser.y"
+                             {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("comparación incompatible", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Eq"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="bool";
+    }
+#line 2000 "parser.tab.c"
     break;
 
   case 51: /* expression: expression NEQ expression  */
-#line 294 "parser.y"
-                              { (yyval.nptr) = new Node("Neq"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="bool"; }
-#line 2001 "parser.tab.c"
+#line 338 "parser.y"
+                              {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("comparación incompatible", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Neq"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="bool";
+    }
+#line 2011 "parser.tab.c"
     break;
 
   case 52: /* expression: expression GT expression  */
-#line 295 "parser.y"
-                             { (yyval.nptr) = new Node("Gt"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="bool"; }
-#line 2007 "parser.tab.c"
+#line 345 "parser.y"
+                             {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("comparación incompatible", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Gt"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="bool";
+    }
+#line 2022 "parser.tab.c"
     break;
 
   case 53: /* expression: expression LT expression  */
-#line 296 "parser.y"
-                             { (yyval.nptr) = new Node("Lt"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="bool"; }
-#line 2013 "parser.tab.c"
+#line 352 "parser.y"
+                             {
+        if ((yyvsp[-2].nptr)->value != (yyvsp[0].nptr)->value)
+            error_semantico("comparación incompatible", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Lt"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="bool";
+    }
+#line 2033 "parser.tab.c"
     break;
 
   case 54: /* expression: expression AND expression  */
-#line 298 "parser.y"
-                              { (yyval.nptr) = new Node("And"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="bool"; }
-#line 2019 "parser.tab.c"
+#line 360 "parser.y"
+                              {
+        if ((yyvsp[-2].nptr)->value != "bool" || (yyvsp[0].nptr)->value != "bool")
+            error_semantico("AND requiere booleanos", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("And"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="bool";
+    }
+#line 2044 "parser.tab.c"
     break;
 
   case 55: /* expression: expression OR expression  */
-#line 299 "parser.y"
-                             { (yyval.nptr) = new Node("Or"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="bool"; }
-#line 2025 "parser.tab.c"
+#line 367 "parser.y"
+                             {
+        if ((yyvsp[-2].nptr)->value != "bool" || (yyvsp[0].nptr)->value != "bool")
+            error_semantico("OR requiere booleanos", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Or"); (yyval.nptr)->add_child((yyvsp[-2].nptr)); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="bool";
+    }
+#line 2055 "parser.tab.c"
     break;
 
   case 56: /* expression: NOT expression  */
-#line 300 "parser.y"
-                   { (yyval.nptr) = new Node("Not"); (yyval.nptr)->add_child((yyvsp[0].nptr)); (yyval.nptr)->value="bool"; }
-#line 2031 "parser.tab.c"
+#line 374 "parser.y"
+                   {
+        if ((yyvsp[0].nptr)->value != "bool")
+            error_semantico("NOT requiere booleano", (yylsp[-1]).first_line);
+        (yyval.nptr) = new Node("Not"); (yyval.nptr)->add_child((yyvsp[0].nptr));
+        (yyval.nptr)->value="bool";
+    }
+#line 2066 "parser.tab.c"
     break;
 
   case 57: /* expression: LPAREN expression RPAREN  */
-#line 302 "parser.y"
+#line 381 "parser.y"
                              { (yyval.nptr) = (yyvsp[-1].nptr); }
-#line 2037 "parser.tab.c"
+#line 2072 "parser.tab.c"
     break;
 
 
-#line 2041 "parser.tab.c"
+#line 2076 "parser.tab.c"
 
       default: break;
     }
@@ -2266,15 +2301,19 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 305 "parser.y"
+#line 384 "parser.y"
 
 
 void yyerror(const char *s) {
-    std::cerr << "syntax error: " << s << std::endl;
+    std::cerr << "syntax error: " << s
+              << " at line " << yylloc.first_line
+              << ", column " << yylloc.first_column
+              << std::endl;
 }
 
 int main() {
     std::cout << "--- Parser Musical ---" << std::endl;
+
     if (yyparse() == 0) {
         std::cout << "\n--- AST generado ---" << std::endl;
         if (root) {

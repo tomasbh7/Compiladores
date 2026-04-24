@@ -1,5 +1,6 @@
 %{
 #include "ast.h"
+#include "parser.tab.h"
 #include <iostream>
 #include <string>
 #include <map>
@@ -7,6 +8,7 @@
 
 extern int yylex();
 extern int yylineno;
+extern YYLTYPE yylloc;
 
 void yyerror(const char *s);
 
@@ -19,6 +21,9 @@ void push_scope() { scopes.push_back({}); }
 void pop_scope() { scopes.pop_back(); }
 
 void declare_var(const std::string& id, const std::string& type) {
+    if (scopes.back().count(id))
+        std::cerr << "warning: variable redeclarada: " << id << std::endl;
+
     scopes.back()[id] = type;
 }
 
@@ -80,8 +85,8 @@ mixed_list:
 ;
 
 mixed_item:
-    function_definition { $$ = $1; }
-    | statement { $$ = $1; }
+    function_definition
+    | statement
 ;
 
 function_definition:
@@ -130,9 +135,9 @@ statement_list:
 ;
 
 statement:
-    declaration SEMI { $$ = $1; }
-    | assignment SEMI { $$ = $1; }
-    | expression SEMI { $$ = $1; }
+    declaration SEMI
+    | assignment SEMI
+    | expression SEMI
 
     | PRINT LPAREN expression RPAREN SEMI {
         $$ = new Node("Print");
@@ -141,7 +146,7 @@ statement:
 
     | READ LPAREN ID RPAREN SEMI {
         if (lookup_var($3) == "")
-            error_semantico("variable no declarada: " + std::string($3), @3.first_line);
+            error_semantico("variable no declarada", @3.first_line);
         $$ = new Node("Read", $3);
     }
 
@@ -284,20 +289,91 @@ expression:
         $$->value = t;
     }
 
-  | expression PLUS expression { $$ = new Node("Add"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
-  | expression MINUS expression { $$ = new Node("Sub"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
-  | expression MULT expression { $$ = new Node("Mul"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
-  | expression DIV expression { $$ = new Node("Div"); $$->add_child($1); $$->add_child($3); $$->value=$1->value; }
-  | expression MOD expression { $$ = new Node("Mod"); $$->add_child($1); $$->add_child($3); $$->value="int"; }
+  | expression PLUS expression {
+        if ($1->value != $3->value)
+            error_semantico("tipos incompatibles en suma", @2.first_line);
+        $$ = new Node("Add"); $$->add_child($1); $$->add_child($3);
+        $$->value=$1->value;
+    }
 
-  | expression EQ expression { $$ = new Node("Eq"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
-  | expression NEQ expression { $$ = new Node("Neq"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
-  | expression GT expression { $$ = new Node("Gt"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
-  | expression LT expression { $$ = new Node("Lt"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
+  | expression MINUS expression {
+        if ($1->value != $3->value)
+            error_semantico("tipos incompatibles en resta", @2.first_line);
+        $$ = new Node("Sub"); $$->add_child($1); $$->add_child($3);
+        $$->value=$1->value;
+    }
 
-  | expression AND expression { $$ = new Node("And"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
-  | expression OR expression { $$ = new Node("Or"); $$->add_child($1); $$->add_child($3); $$->value="bool"; }
-  | NOT expression { $$ = new Node("Not"); $$->add_child($2); $$->value="bool"; }
+  | expression MULT expression {
+        if ($1->value != $3->value)
+            error_semantico("tipos incompatibles en multiplicación", @2.first_line);
+        $$ = new Node("Mul"); $$->add_child($1); $$->add_child($3);
+        $$->value=$1->value;
+    }
+
+  | expression DIV expression {
+        if ($1->value != $3->value)
+            error_semantico("tipos incompatibles en división", @2.first_line);
+        $$ = new Node("Div"); $$->add_child($1); $$->add_child($3);
+        $$->value=$1->value;
+    }
+
+  | expression MOD expression {
+        if ($1->value != "int" || $3->value != "int")
+            error_semantico("MOD solo acepta enteros", @2.first_line);
+        $$ = new Node("Mod"); $$->add_child($1); $$->add_child($3);
+        $$->value="int";
+    }
+
+  /* RELACIONALES */
+  | expression EQ expression {
+        if ($1->value != $3->value)
+            error_semantico("comparación incompatible", @2.first_line);
+        $$ = new Node("Eq"); $$->add_child($1); $$->add_child($3);
+        $$->value="bool";
+    }
+
+  | expression NEQ expression {
+        if ($1->value != $3->value)
+            error_semantico("comparación incompatible", @2.first_line);
+        $$ = new Node("Neq"); $$->add_child($1); $$->add_child($3);
+        $$->value="bool";
+    }
+
+  | expression GT expression {
+        if ($1->value != $3->value)
+            error_semantico("comparación incompatible", @2.first_line);
+        $$ = new Node("Gt"); $$->add_child($1); $$->add_child($3);
+        $$->value="bool";
+    }
+
+  | expression LT expression {
+        if ($1->value != $3->value)
+            error_semantico("comparación incompatible", @2.first_line);
+        $$ = new Node("Lt"); $$->add_child($1); $$->add_child($3);
+        $$->value="bool";
+    }
+
+  /* LÓGICOS */
+  | expression AND expression {
+        if ($1->value != "bool" || $3->value != "bool")
+            error_semantico("AND requiere booleanos", @2.first_line);
+        $$ = new Node("And"); $$->add_child($1); $$->add_child($3);
+        $$->value="bool";
+    }
+
+  | expression OR expression {
+        if ($1->value != "bool" || $3->value != "bool")
+            error_semantico("OR requiere booleanos", @2.first_line);
+        $$ = new Node("Or"); $$->add_child($1); $$->add_child($3);
+        $$->value="bool";
+    }
+
+  | NOT expression {
+        if ($2->value != "bool")
+            error_semantico("NOT requiere booleano", @1.first_line);
+        $$ = new Node("Not"); $$->add_child($2);
+        $$->value="bool";
+    }
 
   | LPAREN expression RPAREN { $$ = $2; }
 ;
@@ -305,11 +381,15 @@ expression:
 %%
 
 void yyerror(const char *s) {
-    std::cerr << "syntax error: " << s << std::endl;
+    std::cerr << "syntax error: " << s
+              << " at line " << yylloc.first_line
+              << ", column " << yylloc.first_column
+              << std::endl;
 }
 
 int main() {
     std::cout << "--- Parser Musical ---" << std::endl;
+
     if (yyparse() == 0) {
         std::cout << "\n--- AST generado ---" << std::endl;
         if (root) {

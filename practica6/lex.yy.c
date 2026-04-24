@@ -1,5 +1,5 @@
 
-#line 2 "lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -534,8 +534,8 @@ int yycolumn = 1;
     yylloc.last_column = yycolumn + yyleng - 1;
 
 // Identificadores estándar
-#line 537 "lex.yy.c"
 #line 538 "lex.yy.c"
+#line 539 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -755,7 +755,7 @@ YY_DECL
 #line 22 "lexer.l"
 
 
-#line 758 "lex.yy.c"
+#line 759 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1039,7 +1039,7 @@ YY_RULE_SETUP
 #line 74 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 1042 "lex.yy.c"
+#line 1043 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
